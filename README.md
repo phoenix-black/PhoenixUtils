@@ -1,10 +1,11 @@
 # Video Recorder Usage:
 
-public FrameLayout frame;
-
+ 
 In OnCreate()
+-------------
 
-frame = (FrameLayout)findViewById(R.id.perm_cameraView);
+FrameLayout frame = (FrameLayout)findViewById(R.id.perm_cameraView);
+
 PxVideoRecorder videoRecorder = new PxVideoRecorder(context);
 frame.addView(videoRecorder.surfaceView);
 
@@ -30,8 +31,10 @@ CameraListener cameraListener = new CameraListener() {
             }
 };
 
-
-//Map
+Add Listener to the recorder
+-----------------------------
 videoRecorder.setCameraListener(cameraListener);
 
+Start Recording
+----------------
 videoRecorder.StartRecording(10000); // Time in Milliseconds
