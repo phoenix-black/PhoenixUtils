@@ -1,9 +1,9 @@
 # Video Recorder Usage:
 
  
-In OnCreate()
+## In OnCreate
 -------------
-
+```java
 FrameLayout frame = (FrameLayout)findViewById(R.id.perm_cameraView);
 
 PxVideoRecorder videoRecorder = new PxVideoRecorder(context);
@@ -30,11 +30,14 @@ CameraListener cameraListener = new CameraListener() {
             public void outputFileCreated(File outputFile) {
             }
 };
+```
 
 Add Listener to the recorder
------------------------------
+```java
 videoRecorder.setCameraListener(cameraListener);
+```
+To Start Recording
 
-Start Recording
-----------------
+```java
 videoRecorder.StartRecording(10000); // Time in Milliseconds
+```
