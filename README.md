@@ -4,7 +4,7 @@
 ## In OnCreate
 -------------
 ```java
-FrameLayout frame = (FrameLayout)findViewById(R.id.perm_cameraView);
+FrameLayout frame = (FrameLayout)findViewById(R.id.camera_framLayout);
 
 PxVideoRecorder videoRecorder = new PxVideoRecorder(context);
 frame.addView(videoRecorder.surfaceView);
