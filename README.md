@@ -9,7 +9,7 @@ FrameLayout frame = (FrameLayout)findViewById(R.id.camera_framLayout);
 PxVideoRecorder videoRecorder = new PxVideoRecorder(context);
 frame.addView(videoRecorder.surfaceView);
 
-CameraListener cameraListener = new CameraListener() {
+PxCameraListener cameraListener = new PxCameraListener() {
             @Override
             public void recordingStarted() {
             }
