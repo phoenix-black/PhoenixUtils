@@ -1,8 +1,8 @@
-Video Recorder Usage:
+# Video Recorder Usage:
 
 public FrameLayout frame;
 
-# In OnCreate()
+In OnCreate()
 
 frame = (FrameLayout)findViewById(R.id.perm_cameraView);
 PxVideoRecorder videoRecorder = new PxVideoRecorder(context);
