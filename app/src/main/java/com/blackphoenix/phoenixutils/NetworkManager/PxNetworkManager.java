@@ -21,8 +21,12 @@ import android.util.Log;
 import com.blackphoenix.phoenixutils.R;
 import com.blackphoenix.phoenixwidgets.CustomProgressDialog;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.IOException;
 import java.net.InetAddress;
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -45,6 +49,9 @@ public class PxNetworkManager {
     private static int SIGNAL_STRENGTH_MODERATE = 2;
     private static int SIGNAL_STRENGTH_NONE_OR_UNKNOWN = 0;
     private static int SIGNAL_STRENGTH_POOR = 1;
+
+
+
 
     public PxNetworkManager(Context context) {
         this.context = context;
@@ -175,7 +182,9 @@ public class PxNetworkManager {
         return false;
     }
 
-    public static int getSignalStrengthDbm(Context context)throws PxNetworkException {
+    public static List<PxSignalStrength> getSignalStrengthDbm(Context context)throws PxNetworkException {
+
+        List<PxSignalStrength> pxSignalStrengthList = new ArrayList<>();
 
         TelephonyManager telephonyManager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
 
@@ -191,37 +200,72 @@ public class PxNetworkManager {
             for (int i = 0 ; i<cellInfos.size(); i++){
                 if (cellInfos.get(i).isRegistered()){
                     if(cellInfos.get(i) instanceof CellInfoWcdma){
+
                         CellInfoWcdma cellInfoWcdma = (CellInfoWcdma) telephonyManager.getAllCellInfo().get(0);
                         CellSignalStrengthWcdma cellSignalStrengthWcdma = cellInfoWcdma.getCellSignalStrength();
+
+                        PxSignalStrength pxSignalStrengthWcdma = new PxSignalStrength();
+                        pxSignalStrengthWcdma.type="WCDMA";
+                        pxSignalStrengthWcdma.strength=""+cellSignalStrengthWcdma.getDbm();
+                        pxSignalStrengthList.add(pxSignalStrengthWcdma);
+
                         Log.e(LOG_TITLE,"WCDMA Cell network found: ");
-                        return cellSignalStrengthWcdma.getDbm();
+
+                        //return cellSignalStrengthWcdma.getDbm();
 
                     }else if(cellInfos.get(i) instanceof CellInfoGsm){
                         CellInfoGsm cellInfogsm = (CellInfoGsm) telephonyManager.getAllCellInfo().get(0);
                         CellSignalStrengthGsm cellSignalStrengthGsm = cellInfogsm.getCellSignalStrength();
                         //strength = String.valueOf(cellSignalStrengthGsm.getDbm());
+                        PxSignalStrength pxSignalStrengthGsm = new PxSignalStrength();
+                        pxSignalStrengthGsm.type="GSM";
+                        pxSignalStrengthGsm.strength=""+cellSignalStrengthGsm.getDbm();
+                        pxSignalStrengthList.add(pxSignalStrengthGsm);
+
                         Log.e(LOG_TITLE,"GSM Cell network found: ");
-                        return cellSignalStrengthGsm.getDbm();
+                        //return cellSignalStrengthGsm.getDbm();
 
                     }else if(cellInfos.get(i) instanceof CellInfoLte){
                         CellInfoLte cellInfoLte = (CellInfoLte) telephonyManager.getAllCellInfo().get(0);
                         CellSignalStrengthLte cellSignalStrengthLte = cellInfoLte.getCellSignalStrength();
                         //strength = String.valueOf(cellSignalStrengthLte.getDbm());
-                        Log.e(LOG_TITLE,"LTE Cell network found: ");
-                        return cellSignalStrengthLte.getDbm();
 
+                        PxSignalStrength pxSignalStrengthLte = new PxSignalStrength();
+                        pxSignalStrengthLte.type="LTE";
+                        pxSignalStrengthLte.strength=""+cellSignalStrengthLte.getDbm();
+                        pxSignalStrengthList.add(pxSignalStrengthLte);
+
+                        Log.e(LOG_TITLE,"LTE Cell network found: ");
+                        //return cellSignalStrengthLte.getDbm();
+
+                    } else if(cellInfos.get(i) instanceof CellInfoCdma){
+                        CellInfoCdma cellInfoCdma = (CellInfoCdma) cellInfos.get(i);
+                        CellSignalStrengthCdma cellSignalStrengthLte = cellInfoCdma.getCellSignalStrength();
+                        //strength = String.valueOf(cellSignalStrengthLte.getDbm());
+
+                        PxSignalStrength pxSignalStrengthCdma = new PxSignalStrength();
+                        pxSignalStrengthCdma.type="CDMA";
+                        pxSignalStrengthCdma.strength=""+cellSignalStrengthLte.getDbm();
+                        pxSignalStrengthList.add(pxSignalStrengthCdma);
+
+                        Log.e(LOG_TITLE,"CDMA Cell network found: "+i);
+                        //return cellSignalStrengthLte.getDbm();
                     }
                 }
             }
+
+            return (pxSignalStrengthList.size()>0)?pxSignalStrengthList:null;
+
         } else {
             Log.e(LOG_TITLE,"No Cell Network found");
-            return -1;
+            return null;
         }
 
-        return -1;
     }
 
-    public static int getSignalStrengthLevel(Context context)throws PxNetworkException {
+    public static List<PxSignalStrength> getSignalStrengthLevel(Context context)throws PxNetworkException {
+
+        List<PxSignalStrength> pxSignalStrengthList = new ArrayList<>();
 
         TelephonyManager telephonyManager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
 
@@ -237,41 +281,66 @@ public class PxNetworkManager {
             for (int i = 0 ; i<cellInfos.size(); i++){
                 if (cellInfos.get(i).isRegistered()){
                     if(cellInfos.get(i) instanceof CellInfoWcdma){
-                        CellInfoWcdma cellInfoWcdma = (CellInfoWcdma) cellInfos.get(i);
+
+                        CellInfoWcdma cellInfoWcdma = (CellInfoWcdma) telephonyManager.getAllCellInfo().get(0);
                         CellSignalStrengthWcdma cellSignalStrengthWcdma = cellInfoWcdma.getCellSignalStrength();
-                        Log.e(LOG_TITLE," WCDMA Cell network found: "+i);
-                        return cellSignalStrengthWcdma.getLevel();
+
+                        PxSignalStrength pxSignalStrengthWcdma = new PxSignalStrength();
+                        pxSignalStrengthWcdma.type="WCDMA";
+                        pxSignalStrengthWcdma.strength=""+cellSignalStrengthWcdma.getLevel();
+                        pxSignalStrengthList.add(pxSignalStrengthWcdma);
+
+                        Log.e(LOG_TITLE,"WCDMA Cell network found: ");
+
+                        //return cellSignalStrengthWcdma.getDbm();
 
                     }else if(cellInfos.get(i) instanceof CellInfoGsm){
-                        CellInfoGsm cellInfogsm = (CellInfoGsm) cellInfos.get(i);
+                        CellInfoGsm cellInfogsm = (CellInfoGsm) telephonyManager.getAllCellInfo().get(0);
                         CellSignalStrengthGsm cellSignalStrengthGsm = cellInfogsm.getCellSignalStrength();
                         //strength = String.valueOf(cellSignalStrengthGsm.getDbm());
-                        Log.e(LOG_TITLE,"GSM Cell network found: "+i);
-                        return cellSignalStrengthGsm.getLevel();
+                        PxSignalStrength pxSignalStrengthGsm = new PxSignalStrength();
+                        pxSignalStrengthGsm.type="GSM";
+                        pxSignalStrengthGsm.strength=""+cellSignalStrengthGsm.getLevel();
+                        pxSignalStrengthList.add(pxSignalStrengthGsm);
+
+                        Log.e(LOG_TITLE,"GSM Cell network found: ");
+                        //return cellSignalStrengthGsm.getDbm();
 
                     }else if(cellInfos.get(i) instanceof CellInfoLte){
-                        CellInfoLte cellInfoLte = (CellInfoLte) cellInfos.get(i);
+                        CellInfoLte cellInfoLte = (CellInfoLte) telephonyManager.getAllCellInfo().get(0);
                         CellSignalStrengthLte cellSignalStrengthLte = cellInfoLte.getCellSignalStrength();
                         //strength = String.valueOf(cellSignalStrengthLte.getDbm());
-                        Log.e(LOG_TITLE,"LTE Cell network found: "+i);
-                        return cellSignalStrengthLte.getLevel();
 
-                    } if(cellInfos.get(i) instanceof CellInfoCdma){
+                        PxSignalStrength pxSignalStrengthLte = new PxSignalStrength();
+                        pxSignalStrengthLte.type="LTE";
+                        pxSignalStrengthLte.strength=""+cellSignalStrengthLte.getLevel();
+                        pxSignalStrengthList.add(pxSignalStrengthLte);
+
+                        Log.e(LOG_TITLE,"LTE Cell network found: ");
+                        //return cellSignalStrengthLte.getDbm();
+
+                    } else if(cellInfos.get(i) instanceof CellInfoCdma){
                         CellInfoCdma cellInfoCdma = (CellInfoCdma) cellInfos.get(i);
                         CellSignalStrengthCdma cellSignalStrengthLte = cellInfoCdma.getCellSignalStrength();
                         //strength = String.valueOf(cellSignalStrengthLte.getDbm());
-                        Log.e(LOG_TITLE,"CDMA Cell network found: "+i);
-                        return cellSignalStrengthLte.getLevel();
 
+                        PxSignalStrength pxSignalStrengthCdma = new PxSignalStrength();
+                        pxSignalStrengthCdma.type="CDMA";
+                        pxSignalStrengthCdma.strength=""+cellSignalStrengthLte.getLevel();
+                        pxSignalStrengthList.add(pxSignalStrengthCdma);
+
+                        Log.e(LOG_TITLE,"CDMA Cell network found: "+i);
+                        //return cellSignalStrengthLte.getDbm();
                     }
                 }
             }
+
+            return (pxSignalStrengthList.size()>0)?pxSignalStrengthList:null;
+
         } else {
             Log.e(LOG_TITLE,"No Cell Network found");
-            return -1;
+            return null;
         }
-
-        return -1;
     }
 }
 
