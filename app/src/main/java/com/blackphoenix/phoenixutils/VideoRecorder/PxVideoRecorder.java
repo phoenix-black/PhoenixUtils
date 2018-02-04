@@ -114,7 +114,12 @@ public class PxVideoRecorder implements SurfaceHolder.Callback {
 
         ILog.print("VRec","Recorder Configuration Done");
 
-        localMediaRecorder.setPreviewDisplay(surfaceHolder.getSurface());
+        try {
+            localMediaRecorder.setPreviewDisplay(surfaceHolder.getSurface());
+        } catch (RuntimeException e){
+            videoRecordingListener.recordingInterrupted("RunTimeException : "+e.toString());
+        }
+
 
 
         try {
