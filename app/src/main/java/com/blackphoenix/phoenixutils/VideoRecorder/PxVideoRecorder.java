@@ -126,11 +126,13 @@ public class PxVideoRecorder implements SurfaceHolder.Callback {
             localMediaRecorder.prepare();
         } catch (IllegalStateException e) {
             localMediaRecorder.release();
+            camera.lock();
             e.printStackTrace();
             videoRecordingListener.recordingInterrupted("Unable to Create Video File");
             return null;
         } catch (IOException e) {
             localMediaRecorder.release();
+            camera.lock();
             e.printStackTrace();
             videoRecordingListener.recordingInterrupted("Unable to Create Video File");
             return null;
