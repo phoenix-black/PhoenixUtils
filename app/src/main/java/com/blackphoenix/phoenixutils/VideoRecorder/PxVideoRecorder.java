@@ -106,6 +106,7 @@ public class PxVideoRecorder implements SurfaceHolder.Callback {
         recordedVideoFile = prepareVideoFile();
 
         if(recordedVideoFile == null){
+            camera.lock();
             videoRecordingListener.recordingInterrupted("Unable to Create Video File");
             return null;
         }
@@ -117,6 +118,7 @@ public class PxVideoRecorder implements SurfaceHolder.Callback {
         try {
             localMediaRecorder.setPreviewDisplay(surfaceHolder.getSurface());
         } catch (RuntimeException e){
+            camera.lock();
             videoRecordingListener.recordingInterrupted("RunTimeException : "+e.toString());
         }
 
@@ -128,13 +130,13 @@ public class PxVideoRecorder implements SurfaceHolder.Callback {
             localMediaRecorder.release();
             camera.lock();
             e.printStackTrace();
-            videoRecordingListener.recordingInterrupted("Unable to Create Video File");
+            videoRecordingListener.recordingInterrupted("Exception Occurred "+e.toString());
             return null;
         } catch (IOException e) {
             localMediaRecorder.release();
             camera.lock();
             e.printStackTrace();
-            videoRecordingListener.recordingInterrupted("Unable to Create Video File");
+            videoRecordingListener.recordingInterrupted("Exception Occurred "+e.toString());
             return null;
         }
 
