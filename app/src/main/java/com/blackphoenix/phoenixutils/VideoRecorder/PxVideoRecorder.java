@@ -18,6 +18,7 @@ import java.io.IOException;
 
 public class PxVideoRecorder implements SurfaceHolder.Callback {
 
+    Context mContext;
     private SurfaceHolder surfaceHolder;
     public MediaRecorder mediaRecorder;
     public VideoSurfaceView surfaceView;
@@ -39,11 +40,11 @@ public class PxVideoRecorder implements SurfaceHolder.Callback {
     private PxCameraListener videoRecordingListener;
 
     public PxVideoRecorder(Context context) {
-
+        mContext = context;
         recordStatus = false;
-        surfaceView = new VideoSurfaceView(context);
+       /* surfaceView = new VideoSurfaceView(context);
         surfaceHolder = surfaceView.getHolder();
-        surfaceHolder.addCallback(this);
+        surfaceHolder.addCallback(this);*/
         // commented because its depreciated in latest library
         // Also it will be automatically done in latest API
         //surfaceHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
@@ -88,7 +89,14 @@ public class PxVideoRecorder implements SurfaceHolder.Callback {
     private MediaRecorder setupMediaRecorder(){
         recordedVideoFile = null;
 
-        camera = getCameraInstance();
+        surfaceView = new VideoSurfaceView(mContext);
+        surfaceHolder = surfaceView.getHolder();
+        surfaceHolder.addCallback(this);
+       // camera = getCameraInstance();
+
+        if(camera == null){
+            videoRecordingListener.recordingError("Camera Initialization Failed");
+        }
 
         MediaRecorder localMediaRecorder = new MediaRecorder();
         camera.unlock();
