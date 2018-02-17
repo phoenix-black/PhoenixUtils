@@ -20,7 +20,7 @@ import java.util.Locale;
  * Created by w on 07-11-2016.
  */
 
-public class PxVideoRecorder implements SurfaceHolder.Callback {
+public class PxVideoRecorderV2 implements SurfaceHolder.Callback {
 
     Context mContext;
     private SurfaceHolder surfaceHolder;
@@ -50,11 +50,11 @@ public class PxVideoRecorder implements SurfaceHolder.Callback {
         int folderName;
     }
 
-    public PxVideoRecorder(Context context){
+    public PxVideoRecorderV2(Context context){
         this(context,null);
     }
 
-    public PxVideoRecorder(Context context, FrameLayout frameLayout) {
+    public PxVideoRecorderV2(Context context, FrameLayout frameLayout) {
         this.mContext = context;
         this.mRecordStatus = false;
         this.mVideoFrame = frameLayout;
@@ -260,7 +260,7 @@ public class PxVideoRecorder implements SurfaceHolder.Callback {
 
         this.setupCamera();
 
-        if(mCamera == null) {
+       /* if(mCamera == null) {
             try {
                 mCamera = getCameraInstance();
             } catch (VideoRecorderException e){
@@ -276,7 +276,11 @@ public class PxVideoRecorder implements SurfaceHolder.Callback {
                 return;
             }
         }
+*/
 
+    }
+
+    private void start(int mSeconds){
         mediaRecorder = this.setupMediaRecorder();
 
         if(mediaRecorder == null){
@@ -413,6 +417,8 @@ public class PxVideoRecorder implements SurfaceHolder.Callback {
                 mVideoRecordingListener.recordingError(e.toString());
             }
         }
+
+        start(MIN_RECORD_TIME);
 
     }
 
