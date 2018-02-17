@@ -51,7 +51,7 @@ public class PxVideoRecorder implements SurfaceHolder.Callback {
 
 
         mediaRecorder = new MediaRecorder();
-        camera = getCameraInstance();
+   //     camera = getCameraInstance();
 
         // ToDo : Create Proper Video Storing Directory
         deviceHomeDir = context.getFilesDir();
@@ -87,6 +87,8 @@ public class PxVideoRecorder implements SurfaceHolder.Callback {
 
     private MediaRecorder setupMediaRecorder(){
         recordedVideoFile = null;
+
+        camera = getCameraInstance();
 
         MediaRecorder localMediaRecorder = new MediaRecorder();
         camera.unlock();
