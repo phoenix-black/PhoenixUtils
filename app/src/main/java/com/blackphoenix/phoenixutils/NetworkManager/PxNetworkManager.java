@@ -389,9 +389,8 @@ public class PxNetworkManager {
 
                             JSONObject networkIdentity = new JSONObject();
                             networkIdentity.put("cid",cellIdentity.getCid());
-                            networkIdentity.put("string",cellIdentity.toString());
-
-                            networkData.put("identity",networkIdentity.toString());
+                            networkIdentity.put("string",cellIdentity);
+                            networkData.put("identity",networkIdentity);
 
 
                             networkDataList.put(networkData);
@@ -465,14 +464,14 @@ public class PxNetworkManager {
                             networkStrength.put("asu",cellSignalStrength.getAsuLevel());
                             networkStrength.put("dbm",cellSignalStrength.getDbm());
                             networkStrength.put("level",cellSignalStrength.getLevel());
-                            networkStrength.put("string",cellSignalStrength.toString());
+                            networkStrength.put("string",cellSignalStrength);
 
                             networkData.put("signal",networkStrength.toString());
 
                             JSONObject networkIdentity = new JSONObject();
-                            networkIdentity.put("string",cellIdentity.toString());
+                            networkIdentity.put("string",cellIdentity);
 
-                            networkData.put("identity",networkIdentity.toString());
+                            networkData.put("identity",networkIdentity);
 
                             networkDataList.put(networkData);
 
@@ -538,7 +537,7 @@ public class PxNetworkManager {
                             networkIdentity.put("lac",cellIdentity.getLac());
                             networkIdentity.put("mcc",cellIdentity.getMcc());
                             networkIdentity.put("mnc",cellIdentity.getMnc());
-                            networkData.put("cell_info",networkIdentity.toString());
+                            networkData.put("cell_info",networkIdentity);
                             networkDataList.put(networkData);
 
                             Log.e(LOG_TITLE, "GSM Cell network found: ");
@@ -557,7 +556,7 @@ public class PxNetworkManager {
                             networkIdentity.put("tac",cellIdentity.getTac());
                             networkIdentity.put("mcc",cellIdentity.getMcc());
                             networkIdentity.put("mnc",cellIdentity.getMnc());
-                            networkData.put("cell_info",networkIdentity.toString());
+                            networkData.put("cell_info",networkIdentity);
 
                             networkDataList.put(networkData);
                             Log.e(LOG_TITLE, "LTE Cell network found: ");
@@ -575,7 +574,7 @@ public class PxNetworkManager {
                             networkIdentity.put("longitude",cellIdentity.getLongitude());
                             networkIdentity.put("network_id",cellIdentity.getNetworkId());
                             networkIdentity.put("system_id",cellIdentity.getSystemId());
-                            networkData.put("cell_info",networkIdentity.toString());
+                            networkData.put("cell_info",networkIdentity);
 
                             networkDataList.put(networkData);
 
