@@ -188,6 +188,19 @@ public class PxNetworkManager {
         return false;
     }
 
+    public static String getCountryCode(Context context) throws PxNetworkException {
+        TelephonyManager telephonyManager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
+
+        try {
+            String countryCode = telephonyManager.getSimCountryIso();
+            Log.e(LOG_TITLE, "CountryCode " + countryCode);
+            return countryCode;
+        } catch (NullPointerException e) {
+            throw new PxNetworkException(e.toString());
+        }
+
+    }
+
     public static List<PxSignalStrength> getSignalStrengthDbm(Context context)throws PxNetworkException {
 
         try {
@@ -195,12 +208,6 @@ public class PxNetworkManager {
 
             TelephonyManager telephonyManager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
 
-            try {
-                String countryCode = telephonyManager.getSimCountryIso();
-                Log.e(LOG_TITLE, "CountryCode " + countryCode);
-            } catch (NullPointerException e) {
-                Log.e(LOG_TITLE, "Null pointer while getting country code : " + e.getMessage());
-            }
 
             List<CellInfo> cellInfos = telephonyManager.getAllCellInfo();   //This will give info of all sims present inside your mobile
             if (cellInfos != null) {
@@ -282,13 +289,6 @@ public class PxNetworkManager {
 
             TelephonyManager telephonyManager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
 
-            try {
-                String countryCode = telephonyManager.getSimCountryIso();
-                Log.e(LOG_TITLE, "CountryCode " + countryCode);
-            } catch (NullPointerException e) {
-                Log.e(LOG_TITLE, "Null pointer while getting country code : " + e.getMessage());
-            }
-
             List<CellInfo> cellInfos = telephonyManager.getAllCellInfo();   //This will give info of all sims present inside your mobile
             if (cellInfos != null) {
                 for (int i = 0; i < cellInfos.size(); i++) {
@@ -366,13 +366,6 @@ public class PxNetworkManager {
 
             TelephonyManager telephonyManager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
 
-            try {
-                String countryCode = telephonyManager.getSimCountryIso();
-                Log.e(LOG_TITLE, "CountryCode " + countryCode);
-            } catch (NullPointerException e) {
-                Log.e(LOG_TITLE, "Null pointer while getting country code : " + e.getMessage());
-            }
-
             List<CellInfo> cellInfos = telephonyManager.getAllCellInfo();   //This will give info of all sims present inside your mobile
             if (cellInfos != null) {
                 for (int i = 0; i < cellInfos.size(); i++) {
@@ -395,7 +388,7 @@ public class PxNetworkManager {
                             networkData.put("signal",networkStrength.toString());
 
                             JSONObject networkIdentity = new JSONObject();
-                            networkIdentity.put("CID",cellIdentity.getCid());
+                            networkIdentity.put("cid",cellIdentity.getCid());
                             networkIdentity.put("string",cellIdentity.toString());
 
                             networkData.put("identity",networkIdentity.toString());
@@ -424,7 +417,7 @@ public class PxNetworkManager {
                             networkData.put("signal",networkStrength.toString());
 
                             JSONObject networkIdentity = new JSONObject();
-                            networkIdentity.put("CID",cellIdentity.getCid());
+                            networkIdentity.put("cid",cellIdentity.getCid());
                             networkIdentity.put("string",cellIdentity.toString());
 
                             networkData.put("identity",networkIdentity.toString());
@@ -479,6 +472,100 @@ public class PxNetworkManager {
                             networkIdentity.put("string",cellIdentity.toString());
 
                             networkData.put("identity",networkIdentity.toString());
+
+                            Log.e(LOG_TITLE, "LTE Cell network found: ");
+
+                            Log.e(LOG_TITLE, "CDMA Cell network found: " + i);
+                            //return cellSignalStrengthLte.getDbm();
+                        }
+                    }
+                }
+
+                return (networkDataList.length() > 0) ? networkDataList : null;
+
+            } else {
+                Log.e(LOG_TITLE, "No Cell Network found");
+                return null;
+            }
+        }catch (Exception e){
+            throw new PxNetworkException(e.toString());
+        }
+    }
+
+
+    public static JSONArray getCellIdentity(Context context)throws PxNetworkException {
+
+        try {
+            JSONArray networkDataList = new JSONArray();
+
+            TelephonyManager telephonyManager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
+
+            List<CellInfo> cellInfos = telephonyManager.getAllCellInfo();   //This will give info of all sims present inside your mobile
+            if (cellInfos != null) {
+                for (int i = 0; i < cellInfos.size(); i++) {
+                    if (cellInfos.get(i).isRegistered()) {
+                        if (cellInfos.get(i) instanceof CellInfoWcdma) {
+
+                            CellInfoWcdma cellInfo = (CellInfoWcdma) telephonyManager.getAllCellInfo().get(i);
+                            CellIdentityWcdma cellIdentity = cellInfo.getCellIdentity();
+
+                            JSONObject networkData = new JSONObject();
+                            networkData.put("type","WCDMA");
+                            JSONObject networkIdentity = new JSONObject();
+                            networkIdentity.put("cid",cellIdentity.getCid());
+                            networkIdentity.put("string",cellIdentity.toString());
+                            networkData.put("cell_info",networkIdentity.toString());
+
+
+                            networkDataList.put(networkData);
+
+                            Log.e(LOG_TITLE, "WCDMA Cell network found: ");
+
+                            //return cellSignalStrengthWcdma.getDbm();
+
+                        } else if (cellInfos.get(i) instanceof CellInfoGsm) {
+                            CellInfoGsm cellInfo = (CellInfoGsm) telephonyManager.getAllCellInfo().get(i);
+                            CellIdentityGsm cellIdentity = cellInfo.getCellIdentity();
+
+                            JSONObject networkData = new JSONObject();
+                            networkData.put("type","GSM");
+
+                            JSONObject networkIdentity = new JSONObject();
+                            networkIdentity.put("cid",cellIdentity.getCid());
+                            networkIdentity.put("string",cellIdentity.toString());
+                            networkData.put("cell_info",networkIdentity.toString());
+
+
+                            networkDataList.put(networkData);
+
+                            Log.e(LOG_TITLE, "GSM Cell network found: ");
+                            //return cellSignalStrengthGsm.getDbm();
+
+                        } else if (cellInfos.get(i) instanceof CellInfoLte) {
+                            CellInfoLte cellInfo = (CellInfoLte) telephonyManager.getAllCellInfo().get(i);
+                            CellIdentityLte cellIdentity = cellInfo.getCellIdentity();
+
+                            JSONObject networkData = new JSONObject();
+                            networkData.put("type","LTE");
+
+                            JSONObject networkIdentity = new JSONObject();
+                            networkIdentity.put("string",cellIdentity.toString());
+                            networkData.put("cell_info",networkIdentity.toString());
+
+                            Log.e(LOG_TITLE, "LTE Cell network found: ");
+                            //return cellSignalStrengthLte.getDbm();
+
+                        } else if (cellInfos.get(i) instanceof CellInfoCdma) {
+                            CellInfoCdma cellInfo = (CellInfoCdma) telephonyManager.getAllCellInfo().get(i);
+                            CellIdentityCdma cellIdentity = cellInfo.getCellIdentity();
+
+                            JSONObject networkData = new JSONObject();
+                            networkData.put("type","CDMA");
+
+                            JSONObject networkIdentity = new JSONObject();
+                            networkIdentity.put("string",cellIdentity.toString());
+
+                            networkData.put("cell_info",networkIdentity.toString());
 
                             Log.e(LOG_TITLE, "LTE Cell network found: ");
 
