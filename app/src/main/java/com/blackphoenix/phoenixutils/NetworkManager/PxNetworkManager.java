@@ -383,9 +383,8 @@ public class PxNetworkManager {
                             networkStrength.put("asu",cellSignalStrength.getAsuLevel());
                             networkStrength.put("dbm",cellSignalStrength.getDbm());
                             networkStrength.put("level",cellSignalStrength.getLevel());
-                            networkStrength.put("string",cellSignalStrength.toString());
-
-                            networkData.put("signal",networkStrength.toString());
+                            networkStrength.put("string",cellSignalStrength);
+                            networkData.put("signal",networkStrength);
 
                             JSONObject networkIdentity = new JSONObject();
                             networkIdentity.put("cid",cellIdentity.getCid());
