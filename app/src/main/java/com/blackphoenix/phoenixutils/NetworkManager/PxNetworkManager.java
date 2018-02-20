@@ -449,6 +449,7 @@ public class PxNetworkManager {
 
                             networkData.put("identity",networkIdentity.toString());
 
+                            networkDataList.put(networkData);
                             Log.e(LOG_TITLE, "LTE Cell network found: ");
                             //return cellSignalStrengthLte.getDbm();
 
@@ -473,7 +474,7 @@ public class PxNetworkManager {
 
                             networkData.put("identity",networkIdentity.toString());
 
-                            Log.e(LOG_TITLE, "LTE Cell network found: ");
+                            networkDataList.put(networkData);
 
                             Log.e(LOG_TITLE, "CDMA Cell network found: " + i);
                             //return cellSignalStrengthLte.getDbm();
@@ -513,8 +514,10 @@ public class PxNetworkManager {
                             networkData.put("type","WCDMA");
                             JSONObject networkIdentity = new JSONObject();
                             networkIdentity.put("cid",cellIdentity.getCid());
-                            networkIdentity.put("string",new JSONObject("{"+cellIdentity.toString()+"}"));
-
+                            networkIdentity.put("lac",cellIdentity.getLac());
+                            networkIdentity.put("psc",cellIdentity.getPsc());
+                            networkIdentity.put("mcc",cellIdentity.getMcc());
+                            networkIdentity.put("mnc",cellIdentity.getMnc());
                             networkData.put("cell_info",networkIdentity);
 
                             networkDataList.put(networkData);
@@ -532,10 +535,10 @@ public class PxNetworkManager {
 
                             JSONObject networkIdentity = new JSONObject();
                             networkIdentity.put("cid",cellIdentity.getCid());
-                            networkIdentity.put("string",cellIdentity.toString());
+                            networkIdentity.put("lac",cellIdentity.getLac());
+                            networkIdentity.put("mcc",cellIdentity.getMcc());
+                            networkIdentity.put("mnc",cellIdentity.getMnc());
                             networkData.put("cell_info",networkIdentity.toString());
-
-
                             networkDataList.put(networkData);
 
                             Log.e(LOG_TITLE, "GSM Cell network found: ");
@@ -549,9 +552,14 @@ public class PxNetworkManager {
                             networkData.put("type","LTE");
 
                             JSONObject networkIdentity = new JSONObject();
-                            networkIdentity.put("string",cellIdentity.toString());
+                            networkIdentity.put("ci",cellIdentity.getCi());
+                            networkIdentity.put("pci",cellIdentity.getPci());
+                            networkIdentity.put("tac",cellIdentity.getTac());
+                            networkIdentity.put("mcc",cellIdentity.getMcc());
+                            networkIdentity.put("mnc",cellIdentity.getMnc());
                             networkData.put("cell_info",networkIdentity.toString());
 
+                            networkDataList.put(networkData);
                             Log.e(LOG_TITLE, "LTE Cell network found: ");
                             //return cellSignalStrengthLte.getDbm();
 
@@ -563,11 +571,13 @@ public class PxNetworkManager {
                             networkData.put("type","CDMA");
 
                             JSONObject networkIdentity = new JSONObject();
-                            networkIdentity.put("string",cellIdentity.toString());
-
+                            networkIdentity.put("latitude",cellIdentity.getLatitude());
+                            networkIdentity.put("longitude",cellIdentity.getLongitude());
+                            networkIdentity.put("network_id",cellIdentity.getNetworkId());
+                            networkIdentity.put("system_id",cellIdentity.getSystemId());
                             networkData.put("cell_info",networkIdentity.toString());
 
-                            Log.e(LOG_TITLE, "LTE Cell network found: ");
+                            networkDataList.put(networkData);
 
                             Log.e(LOG_TITLE, "CDMA Cell network found: " + i);
                             //return cellSignalStrengthLte.getDbm();
