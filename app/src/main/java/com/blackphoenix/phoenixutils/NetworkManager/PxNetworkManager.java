@@ -513,7 +513,8 @@ public class PxNetworkManager {
                             networkData.put("type","WCDMA");
                             JSONObject networkIdentity = new JSONObject();
                             networkIdentity.put("cid",cellIdentity.getCid());
-                            networkIdentity.put("string",new JSONObject(cellIdentity.toString()));
+                            networkIdentity.put("string",new JSONObject("{"+cellIdentity.toString())+"}");
+
                             networkData.put("cell_info",networkIdentity);
 
                             networkDataList.put(networkData);
