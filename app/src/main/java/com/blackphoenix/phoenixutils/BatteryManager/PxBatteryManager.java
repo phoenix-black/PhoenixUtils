@@ -51,6 +51,10 @@ public class PxBatteryManager {
         return false;
     }
 
+    public void onPause(){
+        _context.unregisterReceiver(mBroadcastReceiver);
+    }
+
     private BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {

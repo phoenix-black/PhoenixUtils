@@ -125,6 +125,7 @@ public class PxNetworkManager {
         Get the Type of Network Connected to (WiFi/Mobile/Ethernet/Bluetooth)
         @Parm: Context
         @Ret: Boolean
+        // https://developer.android.com/reference/android/telephony/TelephonyManager.html
      */
 
     public static String getNetworkType(Context context) throws PxNetworkException {
