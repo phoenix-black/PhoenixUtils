@@ -52,7 +52,11 @@ public class PxBatteryManager {
     }
 
     public void onPause(){
-        _context.unregisterReceiver(mBroadcastReceiver);
+        try {
+            _context.unregisterReceiver(mBroadcastReceiver);
+        } catch (IllegalArgumentException e){
+            e.printStackTrace();
+        }
     }
 
     private BroadcastReceiver mBroadcastReceiver = new BroadcastReceiver() {
