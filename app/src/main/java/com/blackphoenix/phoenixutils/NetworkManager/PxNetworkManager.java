@@ -1,8 +1,12 @@
 package com.blackphoenix.phoenixutils.NetworkManager;
 
+import android.Manifest;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.telephony.CellIdentityCdma;
 import android.telephony.CellIdentityGsm;
 import android.telephony.CellIdentityLte;
@@ -57,12 +61,10 @@ public class PxNetworkManager {
     private static int SIGNAL_STRENGTH_POOR = 1;
 
 
-
-
     public PxNetworkManager(Context context) {
         this.context = context;
         mTelephonyManager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
-        phoneStateListener = new PhoneStateListener(){
+        phoneStateListener = new PhoneStateListener() {
             @Override
             public void onSignalStrengthsChanged(SignalStrength signalStrength) {
                 super.onSignalStrengthsChanged(signalStrength);
@@ -83,25 +85,25 @@ public class PxNetworkManager {
 
     }
 
-    public void registerSignalStrengthListener(){
-        if(mTelephonyManager!=null)
-        mTelephonyManager.listen(phoneStateListener, PhoneStateListener.LISTEN_SIGNAL_STRENGTHS);
+    public void registerSignalStrengthListener() {
+        if (mTelephonyManager != null)
+            mTelephonyManager.listen(phoneStateListener, PhoneStateListener.LISTEN_SIGNAL_STRENGTHS);
         // ToDo : Handle the else Part Here
     }
 
-    public void unRegisterSignalStrengthListener(){
-        if(mTelephonyManager!=null)
-        mTelephonyManager.listen(phoneStateListener, PhoneStateListener.LISTEN_NONE);
+    public void unRegisterSignalStrengthListener() {
+        if (mTelephonyManager != null)
+            mTelephonyManager.listen(phoneStateListener, PhoneStateListener.LISTEN_NONE);
         // ToDo : Handle the else Part Here
     }
 
 
-    public int getSignalStrength(){
+    public int getSignalStrength() {
         return signalStrength;
     }
 
-    public void destroy(){
-        if(mTelephonyManager!=null) {
+    public void destroy() {
+        if (mTelephonyManager != null) {
             mTelephonyManager.listen(phoneStateListener, PhoneStateListener.LISTEN_NONE);
             mTelephonyManager = null;
         }
@@ -202,7 +204,7 @@ public class PxNetworkManager {
 
     }
 
-    public static List<PxSignalStrength> getSignalStrengthDbm(Context context)throws PxNetworkException {
+    public static List<PxSignalStrength> getSignalStrengthDbm(Context context) throws PxNetworkException {
 
         try {
             List<PxSignalStrength> pxSignalStrengthList = new ArrayList<>();
@@ -210,40 +212,41 @@ public class PxNetworkManager {
             TelephonyManager telephonyManager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
 
 
-            List<CellInfo> cellInfos = telephonyManager.getAllCellInfo();   //This will give info of all sims present inside your mobile
+            List<CellInfo> cellInfos = mGetCellInfo(context,telephonyManager);   //This will give info of all sims present inside your mobile
+
             if (cellInfos != null) {
                 for (int i = 0; i < cellInfos.size(); i++) {
                     if (cellInfos.get(i).isRegistered()) {
                         if (cellInfos.get(i) instanceof CellInfoWcdma) {
 
-                            CellInfoWcdma cellInfoWcdma = (CellInfoWcdma) telephonyManager.getAllCellInfo().get(i);
+                            CellInfoWcdma cellInfoWcdma = (CellInfoWcdma) cellInfos.get(i);
                             CellSignalStrengthWcdma cellSignalStrengthWcdma = cellInfoWcdma.getCellSignalStrength();
                             PxSignalStrength pxSignalStrengthWcdma = new PxSignalStrength();
                             pxSignalStrengthWcdma.type = "WCDMA";
                             pxSignalStrengthWcdma.strength = "" + cellSignalStrengthWcdma.getDbm();
                             pxSignalStrengthList.add(pxSignalStrengthWcdma);
 
-                            Log.e("NW","WCDMA : "+cellSignalStrengthWcdma.toString());
+                            Log.e("NW", "WCDMA : " + cellSignalStrengthWcdma.toString());
                             Log.e(LOG_TITLE, "WCDMA Cell network found: ");
 
                             CellIdentityWcdma cellIdentityWcdma = cellInfoWcdma.getCellIdentity();
-                            Log.e("NW","WCDMA ID : "+cellIdentityWcdma.toString());
+                            Log.e("NW", "WCDMA ID : " + cellIdentityWcdma.toString());
                             //return cellSignalStrengthWcdma.getDbm();
 
                         } else if (cellInfos.get(i) instanceof CellInfoGsm) {
-                            CellInfoGsm cellInfogsm = (CellInfoGsm) telephonyManager.getAllCellInfo().get(i);
+                            CellInfoGsm cellInfogsm = (CellInfoGsm) cellInfos.get(i);
                             CellSignalStrengthGsm cellSignalStrengthGsm = cellInfogsm.getCellSignalStrength();
                             //strength = String.valueOf(cellSignalStrengthGsm.getDbm());
                             PxSignalStrength pxSignalStrengthGsm = new PxSignalStrength();
                             pxSignalStrengthGsm.type = "GSM";
                             pxSignalStrengthGsm.strength = "" + cellSignalStrengthGsm.getDbm();
                             pxSignalStrengthList.add(pxSignalStrengthGsm);
-                            Log.e("NW","GSM : "+cellSignalStrengthGsm.toString());
+                            Log.e("NW", "GSM : " + cellSignalStrengthGsm.toString());
                             Log.e(LOG_TITLE, "GSM Cell network found: ");
                             //return cellSignalStrengthGsm.getDbm();
 
                         } else if (cellInfos.get(i) instanceof CellInfoLte) {
-                            CellInfoLte cellInfoLte = (CellInfoLte) telephonyManager.getAllCellInfo().get(i);
+                            CellInfoLte cellInfoLte = (CellInfoLte) cellInfos.get(i);
                             CellSignalStrengthLte cellSignalStrengthLte = cellInfoLte.getCellSignalStrength();
                             //strength = String.valueOf(cellSignalStrengthLte.getDbm());
 
@@ -251,7 +254,7 @@ public class PxNetworkManager {
                             pxSignalStrengthLte.type = "LTE";
                             pxSignalStrengthLte.strength = "" + cellSignalStrengthLte.getDbm();
                             pxSignalStrengthList.add(pxSignalStrengthLte);
-                            Log.e("NW","LTE : "+cellSignalStrengthLte.toString());
+                            Log.e("NW", "LTE : " + cellSignalStrengthLte.toString());
                             Log.e(LOG_TITLE, "LTE Cell network found: ");
                             //return cellSignalStrengthLte.getDbm();
 
@@ -264,7 +267,7 @@ public class PxNetworkManager {
                             pxSignalStrengthCdma.type = "CDMA";
                             pxSignalStrengthCdma.strength = "" + cellSignalStrengthCdma.getDbm();
                             pxSignalStrengthList.add(pxSignalStrengthCdma);
-                            Log.e("NW","CDMA : "+cellSignalStrengthCdma.toString());
+                            Log.e("NW", "CDMA : " + cellSignalStrengthCdma.toString());
                             Log.e(LOG_TITLE, "CDMA Cell network found: " + i);
                             //return cellSignalStrengthLte.getDbm();
                         }
@@ -275,28 +278,29 @@ public class PxNetworkManager {
 
             } else {
                 Log.e(LOG_TITLE, "No Cell Network found");
-                return null;
+                throw new PxNetworkException("Null Value for CellInfo. Check If Location Permission is Granted");
             }
-        } catch (Exception e){
+        } catch (Exception e) {
             throw new PxNetworkException(e.toString());
         }
 
     }
 
-    public static List<PxSignalStrength> getSignalStrengthLevel(Context context)throws PxNetworkException {
+    public static List<PxSignalStrength> getSignalStrengthLevel(Context context) throws PxNetworkException {
 
         try {
             List<PxSignalStrength> pxSignalStrengthList = new ArrayList<>();
 
             TelephonyManager telephonyManager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
 
-            List<CellInfo> cellInfos = telephonyManager.getAllCellInfo();   //This will give info of all sims present inside your mobile
+            List<CellInfo> cellInfos = mGetCellInfo(context,telephonyManager);   //This will give info of all sims present inside your mobile
+
             if (cellInfos != null) {
                 for (int i = 0; i < cellInfos.size(); i++) {
                     if (cellInfos.get(i).isRegistered()) {
                         if (cellInfos.get(i) instanceof CellInfoWcdma) {
 
-                            CellInfoWcdma cellInfoWcdma = (CellInfoWcdma) telephonyManager.getAllCellInfo().get(i);
+                            CellInfoWcdma cellInfoWcdma = (CellInfoWcdma) cellInfos.get(i);
                             CellSignalStrengthWcdma cellSignalStrengthWcdma = cellInfoWcdma.getCellSignalStrength();
 
                             PxSignalStrength pxSignalStrengthWcdma = new PxSignalStrength();
@@ -309,7 +313,7 @@ public class PxNetworkManager {
                             //return cellSignalStrengthWcdma.getDbm();
 
                         } else if (cellInfos.get(i) instanceof CellInfoGsm) {
-                            CellInfoGsm cellInfogsm = (CellInfoGsm) telephonyManager.getAllCellInfo().get(i);
+                            CellInfoGsm cellInfogsm = (CellInfoGsm) cellInfos.get(i);
                             CellSignalStrengthGsm cellSignalStrengthGsm = cellInfogsm.getCellSignalStrength();
                             //strength = String.valueOf(cellSignalStrengthGsm.getDbm());
                             PxSignalStrength pxSignalStrengthGsm = new PxSignalStrength();
@@ -321,7 +325,7 @@ public class PxNetworkManager {
                             //return cellSignalStrengthGsm.getDbm();
 
                         } else if (cellInfos.get(i) instanceof CellInfoLte) {
-                            CellInfoLte cellInfoLte = (CellInfoLte) telephonyManager.getAllCellInfo().get(i);
+                            CellInfoLte cellInfoLte = (CellInfoLte) cellInfos.get(i);
                             CellSignalStrengthLte cellSignalStrengthLte = cellInfoLte.getCellSignalStrength();
                             //strength = String.valueOf(cellSignalStrengthLte.getDbm());
 
@@ -353,48 +357,49 @@ public class PxNetworkManager {
 
             } else {
                 Log.e(LOG_TITLE, "No Cell Network found");
-                return null;
+                throw new PxNetworkException("Null Value for CellInfo. Check If Location Permission is Granted");
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             throw new PxNetworkException(e.toString());
         }
     }
 
-    public static JSONArray getNetworkData(Context context)throws PxNetworkException {
+    public static JSONArray getNetworkData(Context context) throws PxNetworkException {
 
         try {
             JSONArray networkDataList = new JSONArray();
 
             TelephonyManager telephonyManager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
 
-            List<CellInfo> cellInfos = telephonyManager.getAllCellInfo();   //This will give info of all sims present inside your mobile
+            List<CellInfo> cellInfos = mGetCellInfo(context,telephonyManager);   //This will give info of all sims present inside your mobile
+
             if (cellInfos != null) {
                 for (int i = 0; i < cellInfos.size(); i++) {
                     if (cellInfos.get(i).isRegistered()) {
                         if (cellInfos.get(i) instanceof CellInfoWcdma) {
 
-                            CellInfoWcdma cellInfo = (CellInfoWcdma) telephonyManager.getAllCellInfo().get(i);
+                            CellInfoWcdma cellInfo = (CellInfoWcdma) cellInfos.get(i);
                             CellSignalStrengthWcdma cellSignalStrength = cellInfo.getCellSignalStrength();
                             CellIdentityWcdma cellIdentity = cellInfo.getCellIdentity();
 
                             JSONObject networkData = new JSONObject();
-                            networkData.put("type","WCDMA");
+                            networkData.put("type", "WCDMA");
 
                             JSONObject networkStrength = new JSONObject();
-                            networkStrength.put("asu",cellSignalStrength.getAsuLevel());
-                            networkStrength.put("dbm",cellSignalStrength.getDbm());
-                            networkStrength.put("level",cellSignalStrength.getLevel());
-                            networkStrength.put("string",cellSignalStrength);
-                            networkData.put("signal_info",networkStrength);
+                            networkStrength.put("asu", cellSignalStrength.getAsuLevel());
+                            networkStrength.put("dbm", cellSignalStrength.getDbm());
+                            networkStrength.put("level", cellSignalStrength.getLevel());
+                            networkStrength.put("string", cellSignalStrength);
+                            networkData.put("signal_info", networkStrength);
 
                             JSONObject networkIdentity = new JSONObject();
-                            networkIdentity.put("cid",cellIdentity.getCid());
-                            networkIdentity.put("lac",cellIdentity.getLac());
-                            networkIdentity.put("psc",cellIdentity.getPsc());
-                            networkIdentity.put("mcc",cellIdentity.getMcc());
-                            networkIdentity.put("mnc",cellIdentity.getMnc());
-                            networkIdentity.put("string",cellIdentity);
-                            networkData.put("cell_info",networkIdentity);
+                            networkIdentity.put("cid", cellIdentity.getCid());
+                            networkIdentity.put("lac", cellIdentity.getLac());
+                            networkIdentity.put("psc", cellIdentity.getPsc());
+                            networkIdentity.put("mcc", cellIdentity.getMcc());
+                            networkIdentity.put("mnc", cellIdentity.getMnc());
+                            networkIdentity.put("string", cellIdentity);
+                            networkData.put("cell_info", networkIdentity);
 
 
                             networkDataList.put(networkData);
@@ -404,27 +409,27 @@ public class PxNetworkManager {
                             //return cellSignalStrengthWcdma.getDbm();
 
                         } else if (cellInfos.get(i) instanceof CellInfoGsm) {
-                            CellInfoGsm cellInfo = (CellInfoGsm) telephonyManager.getAllCellInfo().get(i);
+                            CellInfoGsm cellInfo = (CellInfoGsm) cellInfos.get(i);
                             CellSignalStrengthGsm cellSignalStrength = cellInfo.getCellSignalStrength();
                             CellIdentityGsm cellIdentity = cellInfo.getCellIdentity();
 
                             JSONObject networkData = new JSONObject();
-                            networkData.put("type","GSM");
+                            networkData.put("type", "GSM");
 
                             JSONObject networkStrength = new JSONObject();
-                            networkStrength.put("asu",cellSignalStrength.getAsuLevel());
-                            networkStrength.put("dbm",cellSignalStrength.getDbm());
-                            networkStrength.put("level",cellSignalStrength.getLevel());
-                            networkStrength.put("string",cellSignalStrength);
-                            networkData.put("signal_info",networkStrength);
+                            networkStrength.put("asu", cellSignalStrength.getAsuLevel());
+                            networkStrength.put("dbm", cellSignalStrength.getDbm());
+                            networkStrength.put("level", cellSignalStrength.getLevel());
+                            networkStrength.put("string", cellSignalStrength);
+                            networkData.put("signal_info", networkStrength);
 
                             JSONObject networkIdentity = new JSONObject();
-                            networkIdentity.put("cid",cellIdentity.getCid());
-                            networkIdentity.put("lac",cellIdentity.getLac());
-                            networkIdentity.put("mcc",cellIdentity.getMcc());
-                            networkIdentity.put("mnc",cellIdentity.getMnc());
-                            networkIdentity.put("string",cellIdentity);
-                            networkData.put("cell_info",networkIdentity);
+                            networkIdentity.put("cid", cellIdentity.getCid());
+                            networkIdentity.put("lac", cellIdentity.getLac());
+                            networkIdentity.put("mcc", cellIdentity.getMcc());
+                            networkIdentity.put("mnc", cellIdentity.getMnc());
+                            networkIdentity.put("string", cellIdentity);
+                            networkData.put("cell_info", networkIdentity);
 
                             networkDataList.put(networkData);
 
@@ -432,55 +437,55 @@ public class PxNetworkManager {
                             //return cellSignalStrengthGsm.getDbm();
 
                         } else if (cellInfos.get(i) instanceof CellInfoLte) {
-                            CellInfoLte cellInfo = (CellInfoLte) telephonyManager.getAllCellInfo().get(i);
+                            CellInfoLte cellInfo = (CellInfoLte) cellInfos.get(i);
                             CellSignalStrengthLte cellSignalStrength = cellInfo.getCellSignalStrength();
                             CellIdentityLte cellIdentity = cellInfo.getCellIdentity();
 
                             JSONObject networkData = new JSONObject();
-                            networkData.put("type","LTE");
+                            networkData.put("type", "LTE");
 
                             JSONObject networkStrength = new JSONObject();
-                            networkStrength.put("asu",cellSignalStrength.getAsuLevel());
-                            networkStrength.put("dbm",cellSignalStrength.getDbm());
-                            networkStrength.put("level",cellSignalStrength.getLevel());
-                            networkStrength.put("string",cellSignalStrength);
-                            networkData.put("signal_info",networkStrength);
+                            networkStrength.put("asu", cellSignalStrength.getAsuLevel());
+                            networkStrength.put("dbm", cellSignalStrength.getDbm());
+                            networkStrength.put("level", cellSignalStrength.getLevel());
+                            networkStrength.put("string", cellSignalStrength);
+                            networkData.put("signal_info", networkStrength);
 
                             JSONObject networkIdentity = new JSONObject();
-                            networkIdentity.put("ci",cellIdentity.getCi());
-                            networkIdentity.put("pci",cellIdentity.getPci());
-                            networkIdentity.put("tac",cellIdentity.getTac());
-                            networkIdentity.put("mcc",cellIdentity.getMcc());
-                            networkIdentity.put("mnc",cellIdentity.getMnc());
-                            networkIdentity.put("string",cellIdentity);
-                            networkData.put("cell_info",networkIdentity);
+                            networkIdentity.put("ci", cellIdentity.getCi());
+                            networkIdentity.put("pci", cellIdentity.getPci());
+                            networkIdentity.put("tac", cellIdentity.getTac());
+                            networkIdentity.put("mcc", cellIdentity.getMcc());
+                            networkIdentity.put("mnc", cellIdentity.getMnc());
+                            networkIdentity.put("string", cellIdentity);
+                            networkData.put("cell_info", networkIdentity);
 
                             networkDataList.put(networkData);
                             Log.e(LOG_TITLE, "LTE Cell network found: ");
                             //return cellSignalStrengthLte.getDbm();
 
                         } else if (cellInfos.get(i) instanceof CellInfoCdma) {
-                            CellInfoCdma cellInfo = (CellInfoCdma) telephonyManager.getAllCellInfo().get(i);
+                            CellInfoCdma cellInfo = (CellInfoCdma) cellInfos.get(i);
                             CellSignalStrengthCdma cellSignalStrength = cellInfo.getCellSignalStrength();
                             CellIdentityCdma cellIdentity = cellInfo.getCellIdentity();
 
                             JSONObject networkData = new JSONObject();
-                            networkData.put("type","CDMA");
+                            networkData.put("type", "CDMA");
 
                             JSONObject networkStrength = new JSONObject();
-                            networkStrength.put("asu",cellSignalStrength.getAsuLevel());
-                            networkStrength.put("dbm",cellSignalStrength.getDbm());
-                            networkStrength.put("level",cellSignalStrength.getLevel());
-                            networkStrength.put("string",cellSignalStrength);
-                            networkData.put("signal_info",networkStrength);
+                            networkStrength.put("asu", cellSignalStrength.getAsuLevel());
+                            networkStrength.put("dbm", cellSignalStrength.getDbm());
+                            networkStrength.put("level", cellSignalStrength.getLevel());
+                            networkStrength.put("string", cellSignalStrength);
+                            networkData.put("signal_info", networkStrength);
 
                             JSONObject networkIdentity = new JSONObject();
-                            networkIdentity.put("latitude",cellIdentity.getLatitude());
-                            networkIdentity.put("longitude",cellIdentity.getLongitude());
-                            networkIdentity.put("network_id",cellIdentity.getNetworkId());
-                            networkIdentity.put("system_id",cellIdentity.getSystemId());
-                            networkIdentity.put("string",cellIdentity);
-                            networkData.put("cell_info",networkIdentity);
+                            networkIdentity.put("latitude", cellIdentity.getLatitude());
+                            networkIdentity.put("longitude", cellIdentity.getLongitude());
+                            networkIdentity.put("network_id", cellIdentity.getNetworkId());
+                            networkIdentity.put("system_id", cellIdentity.getSystemId());
+                            networkIdentity.put("string", cellIdentity);
+                            networkData.put("cell_info", networkIdentity);
 
                             networkDataList.put(networkData);
 
@@ -494,39 +499,40 @@ public class PxNetworkManager {
 
             } else {
                 Log.e(LOG_TITLE, "No Cell Network found");
-                return null;
+                throw new PxNetworkException("Null Value for CellInfo. Check If Location Permission is Granted");
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             throw new PxNetworkException(e.toString());
         }
     }
 
-    public static JSONArray getSignalData(Context context)throws PxNetworkException {
+    public static JSONArray getSignalData(Context context) throws PxNetworkException {
 
         try {
             JSONArray networkDataList = new JSONArray();
 
             TelephonyManager telephonyManager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
 
-            List<CellInfo> cellInfos = telephonyManager.getAllCellInfo();   //This will give info of all sims present inside your mobile
+            List<CellInfo> cellInfos = mGetCellInfo(context,telephonyManager);   //This will give info of all sims present inside your mobile
+
             if (cellInfos != null) {
                 for (int i = 0; i < cellInfos.size(); i++) {
                     if (cellInfos.get(i).isRegistered()) {
                         if (cellInfos.get(i) instanceof CellInfoWcdma) {
 
-                            CellInfoWcdma cellInfo = (CellInfoWcdma) telephonyManager.getAllCellInfo().get(i);
+                            CellInfoWcdma cellInfo = (CellInfoWcdma) cellInfos.get(i);
                             CellSignalStrengthWcdma cellSignalStrength = cellInfo.getCellSignalStrength();
                             CellIdentityWcdma cellIdentity = cellInfo.getCellIdentity();
 
                             JSONObject networkData = new JSONObject();
-                            networkData.put("type","WCDMA");
+                            networkData.put("type", "WCDMA");
 
                             JSONObject networkStrength = new JSONObject();
-                            networkStrength.put("asu",cellSignalStrength.getAsuLevel());
-                            networkStrength.put("dbm",cellSignalStrength.getDbm());
-                            networkStrength.put("level",cellSignalStrength.getLevel());
-                            networkStrength.put("string",cellSignalStrength);
-                            networkData.put("signal_info",networkStrength);
+                            networkStrength.put("asu", cellSignalStrength.getAsuLevel());
+                            networkStrength.put("dbm", cellSignalStrength.getDbm());
+                            networkStrength.put("level", cellSignalStrength.getLevel());
+                            networkStrength.put("string", cellSignalStrength);
+                            networkData.put("signal_info", networkStrength);
 
                             networkDataList.put(networkData);
 
@@ -535,19 +541,19 @@ public class PxNetworkManager {
                             //return cellSignalStrengthWcdma.getDbm();
 
                         } else if (cellInfos.get(i) instanceof CellInfoGsm) {
-                            CellInfoGsm cellInfo = (CellInfoGsm) telephonyManager.getAllCellInfo().get(i);
+                            CellInfoGsm cellInfo = (CellInfoGsm) cellInfos.get(i);
                             CellSignalStrengthGsm cellSignalStrength = cellInfo.getCellSignalStrength();
                             CellIdentityGsm cellIdentity = cellInfo.getCellIdentity();
 
                             JSONObject networkData = new JSONObject();
-                            networkData.put("type","GSM");
+                            networkData.put("type", "GSM");
 
                             JSONObject networkStrength = new JSONObject();
-                            networkStrength.put("asu",cellSignalStrength.getAsuLevel());
-                            networkStrength.put("dbm",cellSignalStrength.getDbm());
-                            networkStrength.put("level",cellSignalStrength.getLevel());
-                            networkStrength.put("string",cellSignalStrength);
-                            networkData.put("signal_info",networkStrength);
+                            networkStrength.put("asu", cellSignalStrength.getAsuLevel());
+                            networkStrength.put("dbm", cellSignalStrength.getDbm());
+                            networkStrength.put("level", cellSignalStrength.getLevel());
+                            networkStrength.put("string", cellSignalStrength);
+                            networkData.put("signal_info", networkStrength);
 
                             networkDataList.put(networkData);
 
@@ -555,38 +561,38 @@ public class PxNetworkManager {
                             //return cellSignalStrengthGsm.getDbm();
 
                         } else if (cellInfos.get(i) instanceof CellInfoLte) {
-                            CellInfoLte cellInfo = (CellInfoLte) telephonyManager.getAllCellInfo().get(i);
+                            CellInfoLte cellInfo = (CellInfoLte) cellInfos.get(i);
                             CellSignalStrengthLte cellSignalStrength = cellInfo.getCellSignalStrength();
                             CellIdentityLte cellIdentity = cellInfo.getCellIdentity();
 
                             JSONObject networkData = new JSONObject();
-                            networkData.put("type","LTE");
+                            networkData.put("type", "LTE");
 
                             JSONObject networkStrength = new JSONObject();
-                            networkStrength.put("asu",cellSignalStrength.getAsuLevel());
-                            networkStrength.put("dbm",cellSignalStrength.getDbm());
-                            networkStrength.put("level",cellSignalStrength.getLevel());
-                            networkStrength.put("string",cellSignalStrength);
-                            networkData.put("signal_info",networkStrength);
+                            networkStrength.put("asu", cellSignalStrength.getAsuLevel());
+                            networkStrength.put("dbm", cellSignalStrength.getDbm());
+                            networkStrength.put("level", cellSignalStrength.getLevel());
+                            networkStrength.put("string", cellSignalStrength);
+                            networkData.put("signal_info", networkStrength);
 
                             networkDataList.put(networkData);
                             Log.e(LOG_TITLE, "LTE Cell network found: ");
                             //return cellSignalStrengthLte.getDbm();
 
                         } else if (cellInfos.get(i) instanceof CellInfoCdma) {
-                            CellInfoCdma cellInfo = (CellInfoCdma) telephonyManager.getAllCellInfo().get(i);
+                            CellInfoCdma cellInfo = (CellInfoCdma) cellInfos.get(i);
                             CellSignalStrengthCdma cellSignalStrength = cellInfo.getCellSignalStrength();
                             CellIdentityCdma cellIdentity = cellInfo.getCellIdentity();
 
                             JSONObject networkData = new JSONObject();
-                            networkData.put("type","CDMA");
+                            networkData.put("type", "CDMA");
 
                             JSONObject networkStrength = new JSONObject();
-                            networkStrength.put("asu",cellSignalStrength.getAsuLevel());
-                            networkStrength.put("dbm",cellSignalStrength.getDbm());
-                            networkStrength.put("level",cellSignalStrength.getLevel());
-                            networkStrength.put("string",cellSignalStrength);
-                            networkData.put("signal_info",networkStrength);
+                            networkStrength.put("asu", cellSignalStrength.getAsuLevel());
+                            networkStrength.put("dbm", cellSignalStrength.getDbm());
+                            networkStrength.put("level", cellSignalStrength.getLevel());
+                            networkStrength.put("string", cellSignalStrength);
+                            networkData.put("signal_info", networkStrength);
 
                             networkDataList.put(networkData);
 
@@ -600,40 +606,41 @@ public class PxNetworkManager {
 
             } else {
                 Log.e(LOG_TITLE, "No Cell Network found");
-                return null;
+                throw new PxNetworkException("Null Value for CellInfo. Check If Location Permission is Granted");
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             throw new PxNetworkException(e.toString());
         }
     }
 
 
-    public static JSONArray getCellIdentity(Context context)throws PxNetworkException {
+    public static JSONArray getCellIdentity(Context context) throws PxNetworkException {
 
         try {
             JSONArray networkDataList = new JSONArray();
 
             TelephonyManager telephonyManager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
 
-            List<CellInfo> cellInfos = telephonyManager.getAllCellInfo();   //This will give info of all sims present inside your mobile
+            List<CellInfo> cellInfos = mGetCellInfo(context,telephonyManager);   //This will give info of all sims present inside your mobile
+
             if (cellInfos != null) {
                 for (int i = 0; i < cellInfos.size(); i++) {
                     if (cellInfos.get(i).isRegistered()) {
                         if (cellInfos.get(i) instanceof CellInfoWcdma) {
 
-                            CellInfoWcdma cellInfo = (CellInfoWcdma) telephonyManager.getAllCellInfo().get(i);
+                            CellInfoWcdma cellInfo = (CellInfoWcdma) cellInfos.get(i);
                             CellIdentityWcdma cellIdentity = cellInfo.getCellIdentity();
 
                             JSONObject networkData = new JSONObject();
-                            networkData.put("type","WCDMA");
+                            networkData.put("type", "WCDMA");
                             JSONObject networkIdentity = new JSONObject();
-                            networkIdentity.put("cid",cellIdentity.getCid());
-                            networkIdentity.put("lac",cellIdentity.getLac());
-                            networkIdentity.put("psc",cellIdentity.getPsc());
-                            networkIdentity.put("mcc",cellIdentity.getMcc());
-                            networkIdentity.put("mnc",cellIdentity.getMnc());
-                            networkIdentity.put("string",cellIdentity);
-                            networkData.put("cell_info",networkIdentity);
+                            networkIdentity.put("cid", cellIdentity.getCid());
+                            networkIdentity.put("lac", cellIdentity.getLac());
+                            networkIdentity.put("psc", cellIdentity.getPsc());
+                            networkIdentity.put("mcc", cellIdentity.getMcc());
+                            networkIdentity.put("mnc", cellIdentity.getMnc());
+                            networkIdentity.put("string", cellIdentity);
+                            networkData.put("cell_info", networkIdentity);
 
                             networkDataList.put(networkData);
 
@@ -642,58 +649,58 @@ public class PxNetworkManager {
                             //return cellSignalStrengthWcdma.getDbm();
 
                         } else if (cellInfos.get(i) instanceof CellInfoGsm) {
-                            CellInfoGsm cellInfo = (CellInfoGsm) telephonyManager.getAllCellInfo().get(i);
+                            CellInfoGsm cellInfo = (CellInfoGsm) cellInfos.get(i);
                             CellIdentityGsm cellIdentity = cellInfo.getCellIdentity();
 
                             JSONObject networkData = new JSONObject();
-                            networkData.put("type","GSM");
+                            networkData.put("type", "GSM");
 
                             JSONObject networkIdentity = new JSONObject();
-                            networkIdentity.put("cid",cellIdentity.getCid());
-                            networkIdentity.put("lac",cellIdentity.getLac());
-                            networkIdentity.put("mcc",cellIdentity.getMcc());
-                            networkIdentity.put("mnc",cellIdentity.getMnc());
-                            networkIdentity.put("string",cellIdentity);
-                            networkData.put("cell_info",networkIdentity);
+                            networkIdentity.put("cid", cellIdentity.getCid());
+                            networkIdentity.put("lac", cellIdentity.getLac());
+                            networkIdentity.put("mcc", cellIdentity.getMcc());
+                            networkIdentity.put("mnc", cellIdentity.getMnc());
+                            networkIdentity.put("string", cellIdentity);
+                            networkData.put("cell_info", networkIdentity);
                             networkDataList.put(networkData);
 
                             Log.e(LOG_TITLE, "GSM Cell network found: ");
                             //return cellSignalStrengthGsm.getDbm();
 
                         } else if (cellInfos.get(i) instanceof CellInfoLte) {
-                            CellInfoLte cellInfo = (CellInfoLte) telephonyManager.getAllCellInfo().get(i);
+                            CellInfoLte cellInfo = (CellInfoLte) cellInfos.get(i);
                             CellIdentityLte cellIdentity = cellInfo.getCellIdentity();
 
                             JSONObject networkData = new JSONObject();
-                            networkData.put("type","LTE");
+                            networkData.put("type", "LTE");
 
                             JSONObject networkIdentity = new JSONObject();
-                            networkIdentity.put("ci",cellIdentity.getCi());
-                            networkIdentity.put("pci",cellIdentity.getPci());
-                            networkIdentity.put("tac",cellIdentity.getTac());
-                            networkIdentity.put("mcc",cellIdentity.getMcc());
-                            networkIdentity.put("mnc",cellIdentity.getMnc());
-                            networkIdentity.put("string",cellIdentity);
-                            networkData.put("cell_info",networkIdentity);
+                            networkIdentity.put("ci", cellIdentity.getCi());
+                            networkIdentity.put("pci", cellIdentity.getPci());
+                            networkIdentity.put("tac", cellIdentity.getTac());
+                            networkIdentity.put("mcc", cellIdentity.getMcc());
+                            networkIdentity.put("mnc", cellIdentity.getMnc());
+                            networkIdentity.put("string", cellIdentity);
+                            networkData.put("cell_info", networkIdentity);
 
                             networkDataList.put(networkData);
                             Log.e(LOG_TITLE, "LTE Cell network found: ");
                             //return cellSignalStrengthLte.getDbm();
 
                         } else if (cellInfos.get(i) instanceof CellInfoCdma) {
-                            CellInfoCdma cellInfo = (CellInfoCdma) telephonyManager.getAllCellInfo().get(i);
+                            CellInfoCdma cellInfo = (CellInfoCdma) cellInfos.get(i);
                             CellIdentityCdma cellIdentity = cellInfo.getCellIdentity();
 
                             JSONObject networkData = new JSONObject();
-                            networkData.put("type","CDMA");
+                            networkData.put("type", "CDMA");
 
                             JSONObject networkIdentity = new JSONObject();
-                            networkIdentity.put("latitude",cellIdentity.getLatitude());
-                            networkIdentity.put("longitude",cellIdentity.getLongitude());
-                            networkIdentity.put("network_id",cellIdentity.getNetworkId());
-                            networkIdentity.put("system_id",cellIdentity.getSystemId());
-                            networkIdentity.put("string",cellIdentity);
-                            networkData.put("cell_info",networkIdentity);
+                            networkIdentity.put("latitude", cellIdentity.getLatitude());
+                            networkIdentity.put("longitude", cellIdentity.getLongitude());
+                            networkIdentity.put("network_id", cellIdentity.getNetworkId());
+                            networkIdentity.put("system_id", cellIdentity.getSystemId());
+                            networkIdentity.put("string", cellIdentity);
+                            networkData.put("cell_info", networkIdentity);
 
                             networkDataList.put(networkData);
 
@@ -707,11 +714,64 @@ public class PxNetworkManager {
 
             } else {
                 Log.e(LOG_TITLE, "No Cell Network found");
-                return null;
+                throw new PxNetworkException("Null Value for CellInfo. Check If Location Permission is Granted");
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             throw new PxNetworkException(e.toString());
         }
+    }
+
+    public static boolean isSIMReady(@NonNull Context context) throws PxNetworkException {
+
+        TelephonyManager telMgr = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
+
+        if(telMgr == null){
+            throw new PxNetworkException("Null Exception: Unable to Initialize Telephony Manager ... ");
+        }
+        return (telMgr.getSimState() == TelephonyManager.SIM_STATE_READY);
+
+/*
+        int simState = telMgr.getSimState();
+        switch (simState) {
+
+            case TelephonyManager.SIM_STATE_ABSENT:
+                // do something
+                break;
+            case TelephonyManager.SIM_STATE_NETWORK_LOCKED:
+                // do something
+                break;
+            case TelephonyManager.SIM_STATE_PIN_REQUIRED:
+                // do something
+                break;
+            case TelephonyManager.SIM_STATE_PUK_REQUIRED:
+                // do something
+                break;
+            case TelephonyManager.SIM_STATE_READY:
+                // do something
+                break;
+            case TelephonyManager.SIM_STATE_UNKNOWN:
+                // do something
+                break;
+        }*/
+
+    }
+
+
+    private static List<CellInfo> mGetCellInfo(Context context, TelephonyManager telephonyManager) {
+
+        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+            return null;
+        }
+
+        return telephonyManager.getAllCellInfo();
     }
 
 }
