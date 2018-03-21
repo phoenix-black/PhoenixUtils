@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="toastDialogColorPrimaryText">#00ffff</color>
+    <color name="toastDialogSecondaryText">#757575</color>
+    <color name="toastDialogWhite">#000000</color>
+
+</resources>

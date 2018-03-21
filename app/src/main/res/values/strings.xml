@@ -1,0 +1,4 @@
+<resources>
+    <!-- PROGRESS DIALOG -->
+    <string name="toast_inner_image">Inner Image</string>
+</resources>

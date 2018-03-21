@@ -1,15 +1,15 @@
-package com.blackphoenix.phoenixutils;
+package com.blackphoenix.phoenixutils.toast;
 
 import android.content.Context;
 import android.widget.Toast;
 
-import com.blackphoenix.phoenixwidgets.MessageDialog;
-import com.blackphoenix.phoenixwidgets.listeners.ProgressDialogDataInterface;
+import com.blackphoenix.phoenixutils.R;
 
 
 /**
  * Created by Praba on 1/1/2018.
  */
+
 public class IToast {
 
     public static void show(Context context, String message){
@@ -30,9 +30,9 @@ public class IToast {
 
     public static void message(Context context, String message, long timeMilliSeconds){
 
-        MessageDialog messageDialog = new MessageDialog(context, com.blackphoenix.phoenixwidgets.R.style.ProgressDialogTheme,message,timeMilliSeconds) {
+        ToastDialog messageDialog = new ToastDialog(context, R.style.ToastDialogTheme,message,timeMilliSeconds) {
             @Override
-            public void onInterfaceReady(ProgressDialogDataInterface dialogInterface) {
+            public void onInterfaceReady(ToastDialogDataInterface dialogInterface) {
 
             }
 
@@ -52,9 +52,9 @@ public class IToast {
 
     public static void message(Context context, String message){
 
-        MessageDialog messageDialog = new MessageDialog(context, com.blackphoenix.phoenixwidgets.R.style.ProgressDialogTheme,message) {
+        ToastDialog messageDialog = new ToastDialog(context, R.style.ToastDialogTheme,message) {
             @Override
-            public void onInterfaceReady(ProgressDialogDataInterface dialogInterface) {
+            public void onInterfaceReady(ToastDialogDataInterface dialogInterface) {
 
             }
 

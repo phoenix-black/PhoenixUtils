@@ -9,7 +9,7 @@ import java.util.Locale;
  *
  */
 
-public class PxDateTimeUtils {
+public class IDateTimeUtils {
 
     public static String getCurrentDateTimeString(){
         SimpleDateFormat simpleDateFormat =
