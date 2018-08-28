@@ -10,11 +10,20 @@ import java.util.Locale;
 /**
  * Created by Praba on 3/20/2018.
  * ToDo : Handle Parse Exception Properly
+ * ToDo: Explore DateFormat as Alternative for SimpleDateFormat
  */
 
 public class IDateTimeUtils {
 
     private static final String DEFAULT_DATE_TIME_PATTERN = "MM-dd-yy_hh:mm:ss";
+
+    /**
+     *
+     * @return default DateTime Pattern MM-dd-yy_hh:mm:ss
+     */
+    public static String getDefaultDateTimePattern(){
+        return DEFAULT_DATE_TIME_PATTERN;
+    }
 
     /**
      *
@@ -95,8 +104,9 @@ public class IDateTimeUtils {
                 new SimpleDateFormat(dateTimePattern, Locale.getDefault());
         try {
             Date savedDate = simpleDateFormat.parse(dateTimeString);
+            Date currentDate = simpleDateFormat.parse(getCurrentDateTimeString(dateTimePattern));
 
-            long timeDifference = getCurrentTimeMilliSec() - savedDate.getTime();
+            long timeDifference = currentDate.getTime() - savedDate.getTime();
             return (timeDifference <= durationMilliSec);
 
         } catch (ParseException e) {
@@ -140,7 +150,9 @@ public class IDateTimeUtils {
 
         try {
             Date startDate = simpleDateFormat.parse(dateTimeString);
-            return getCurrentTimeMilliSec() - startDate.getTime();
+            Date currentDate = simpleDateFormat.parse(getCurrentDateTimeString(dateTimePattern));
+
+            return currentDate.getTime() - startDate.getTime();
 
         } catch (ParseException e) {
             e.printStackTrace();
