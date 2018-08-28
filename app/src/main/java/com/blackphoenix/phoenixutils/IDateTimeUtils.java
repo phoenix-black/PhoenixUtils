@@ -130,6 +130,7 @@ public class IDateTimeUtils {
      * @param dateTimeString Time for which the difference need to calculated with respect to current time
      * @param dateTimePattern the pattern of the specified date Time String
      * @return the time difference of specified time and current time in milliseconds
+     *          -1 on error
      */
 
     public long getDifferenceTimeFromNow(String dateTimeString, String dateTimePattern){
@@ -156,6 +157,7 @@ public class IDateTimeUtils {
      * @param startDateString Start Time String, should be in the pattern  MM-dd-yy_hh:mm:ss
      * @param endDateString End Time String, should be in the pattern  MM-dd-yy_hh:mm:ss
      * @return  the time difference of specified times in milliseconds
+     *          -1 on error
      */
     public long getDifferenceTime(String startDateString, String endDateString){
         return getDifferenceTime(startDateString,endDateString,DEFAULT_DATE_TIME_PATTERN);
@@ -171,6 +173,7 @@ public class IDateTimeUtils {
      * @param endDateString End Time String
      * @param dateTimePattern PAttern of the start and end time
      * @return the time difference of specified times in milliseconds
+     *          -1 on error
      */
     public long getDifferenceTime(String startDateString, String endDateString, String dateTimePattern){
         SimpleDateFormat simpleDateFormat =
