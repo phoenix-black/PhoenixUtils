@@ -8,7 +8,6 @@ import android.text.method.ScrollingMovementMethod;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.blackphoenix.phoenixutils.R;
 
@@ -19,12 +18,12 @@ import com.blackphoenix.phoenixutils.R;
 
 public abstract class ToastDialog extends AlertDialog {
 
-    private TextView textViewContent;
-    ToastDialogDataInterface progressDialogDataInterface;
-
-    private String progressText = "Please Wait...";
-    long WAIT_TIME = 180*1000;
-    Context _context;
+    protected TextView textViewContent;
+    private ToastDialogDataInterface progressDialogDataInterface;
+    public static String DEFAULT_PROGRESS_TEXT = "Please Wait...";
+    private String progressText = DEFAULT_PROGRESS_TEXT;
+    private long WAIT_TIME = 180*1000;
+    protected Handler timerHandler;
 
     public abstract void onInterfaceReady(ToastDialogDataInterface dialogInterface);
     public abstract void onTimedOut();
@@ -33,7 +32,6 @@ public abstract class ToastDialog extends AlertDialog {
     public ToastDialog(Context context, int themeResId, String text) {
         super(context, themeResId);
         this.progressText = text;
-        this._context = context;
     }
 
 
@@ -41,20 +39,18 @@ public abstract class ToastDialog extends AlertDialog {
         super(context, themeResId);
         this.progressText = text;
         this.WAIT_TIME = timeout;
-        this._context = context;
     }
 
     @Override
     protected void onStart(){
         super.onStart();
-
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.dialog_toast);
+        setContentView(R.layout.pxutils_dialog_toast);
         setCanceledOnTouchOutside(false);
         setCancelable(false);
 
@@ -75,6 +71,11 @@ public abstract class ToastDialog extends AlertDialog {
         closeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+                if(timerHandler!=null){
+                    timerHandler.removeCallbacksAndMessages(null);
+                }
+
                 onDismissed();
                 dismiss();
             }
@@ -92,11 +93,14 @@ public abstract class ToastDialog extends AlertDialog {
     @Override
     public void show(){
         super.show();
-        new Handler().postDelayed(new Runnable() {
+        if(timerHandler==null) {
+            timerHandler = new Handler();
+        }
+
+        timerHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
                 if(isShowing()) {
-                    Toast.makeText(_context, "Timed Out", Toast.LENGTH_SHORT).show();
                     onTimedOut();
                     dismiss();
                 }
@@ -104,14 +108,4 @@ public abstract class ToastDialog extends AlertDialog {
         },WAIT_TIME);
 
     }
-/*
-    public void setProgressDialogText(String message){
-            if(message!=null){
-                if(!message.matches("") || !message.equals("")) {
-                    textViewContent.setText(message);
-                    return;
-                }
-            }
-            textViewContent.setText("Please Wait...");
-    }*/
 }
