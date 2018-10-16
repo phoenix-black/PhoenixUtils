@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="80dp"
+    android:layout_marginStart="30dp"
+    android:layout_marginEnd="30dp"
+    android:layout_marginBottom="70dp"
+    android:layout_gravity="center"
+    android:padding="5dp"
+    android:id="@+id/toastAdvanced_parentLayout"
+    android:background="@drawable/pxutils_toast_shape_rounded_rect_view_red">
+
+    <ImageView
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:layout_margin="3dp"
+        android:id="@+id/toastAdvanced_icon"
+        android:src="@drawable/pxutils_ic_error_red_48dp"
+        android:contentDescription="@string/toast_inner_image"
+        android:layout_gravity="center_horizontal"
+        />
+
+    <TextView
+        android:id="@+id/toastAdvanced_briefContent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Error Box"
+        android:textSize="20sp"
+        android:padding="2dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_gravity="center_vertical"
+        android:maxLines="3"
+        android:scrollbars="vertical"
+        android:maxHeight="100dp"
+        android:textColor="@color/toastDialogColorPrimaryText"
+        />
+
+    <TextView
+        android:id="@+id/toastAdvanced_showMore"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Show More"
+        android:textColor="@drawable/selector_text_color_white_neon"
+        android:textSize="16sp"
+        android:layout_marginTop="3dp"
+        android:layout_marginStart="3dp"
+        android:layout_marginEnd="3dp"
+        android:layout_marginBottom="10dp"
+        android:padding="5dp"/>
+
+    <LinearLayout
+        android:id="@+id/toastAdvanced_detailedContentLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="3dp"
+        android:padding="2dp"
+        android:visibility="gone"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:id="@+id/toastAdvanced_errorCodeLayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="3dp"
+                android:text="Error Code: "
+                android:textSize="16sp"
+                android:textColor="#00FFFF"/>
+
+            <TextView
+                android:id="@+id/toastAdvanced_errorCode"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="3dp"
+                android:ellipsize="marquee"
+                android:singleLine="true"
+                android:marqueeRepeatLimit="marquee_forever"
+                android:text="N/A"
+                android:textSize="16sp"
+                android:textColor="#FFFFFF"/>
+
+        </LinearLayout>
+
+
+        <TextView
+            android:id="@+id/toastAdvanced_detailedContent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="3dp"
+            android:maxLines="5"
+            android:scrollbars="vertical"
+            android:text="Error Message"
+            android:textSize="16sp"
+            android:textColor="#00FFFF"/>
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:layout_margin="5dp">
+
+        <Button
+            android:id="@+id/toastAdvanced_report"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:layout_margin="3dp"
+            android:visibility="invisible"
+            android:text="REPORT"
+            android:textColor="@drawable/selector_text_color_neon_white"
+            android:background="#3c3c3c"
+            style="?android:attr/borderlessButtonStyle"
+            android:textSize="16sp"/>
+
+        <Button
+            android:id="@+id/toastAdvanced_close"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:layout_margin="3dp"
+            android:text="CLOSE"
+            android:textColor="@drawable/selector_text_color_neon_white"
+            android:background="#3c3c3c"
+            style="?android:attr/borderlessButtonStyle"
+            android:textSize="16sp"/>
+
+    </LinearLayout>
+
+
+</LinearLayout>
