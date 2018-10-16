@@ -64,6 +64,7 @@ public abstract class AdvancedToastDialog extends AlertDialog {
 
     public AdvancedToastDialog(Context context, String errorBrief){
         super(context, R.style.ToastDialogTheme);
+        this.briefErrorMessage = errorBrief;
     }
 
     public AdvancedToastDialog(Context context, int themeResId, String text) {
@@ -233,7 +234,6 @@ public abstract class AdvancedToastDialog extends AlertDialog {
     }
 
     private void initErrorMessage(){
-
 
         if(detailedErrorMessage == null){
             showMoreButton.setVisibility(View.GONE);
