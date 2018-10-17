@@ -147,6 +147,13 @@ public abstract class AdvancedToastDialog extends AlertDialog {
 
         onInterfaceReady(progressDialogDataInterface);
 
+        errorCodeView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                errorCodeView.setSelected(!errorCodeView.isSelected());
+            }
+        });
+
         showMoreButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -157,8 +164,10 @@ public abstract class AdvancedToastDialog extends AlertDialog {
 
                     if(errorCode != null && errorCode.length()>0) {
                         errorCodeLayout.setVisibility(View.VISIBLE);
+                        errorCodeView.setSelected(true);
                     } else {
                         errorCodeLayout.setVisibility(View.GONE);
+                        errorCodeView.setSelected(false);
                     }
 
                     if(isReportEnabled){
@@ -168,6 +177,7 @@ public abstract class AdvancedToastDialog extends AlertDialog {
                 } else {
                     showMoreButton.setText("Show More");
                     detailedContentLayout.setVisibility(View.GONE);
+                    errorCodeView.setSelected(false);
                     reportButton.setVisibility(View.INVISIBLE);
                 }
                 showMoreButton.setSelected(!showMoreButton.isSelected());
@@ -259,7 +269,7 @@ public abstract class AdvancedToastDialog extends AlertDialog {
 
         if(errorCode!=null){
             errorCodeView.setText(errorCode);
-            errorCodeView.setSelected(true);
+            errorCodeView.setSelected(false);
         }
 
         detailedContentView.setText(detailedErrorMessage);
