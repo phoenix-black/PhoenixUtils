@@ -37,6 +37,8 @@
         android:layout_gravity="center_vertical"
         android:maxLines="3"
         android:scrollbars="vertical"
+        android:scrollbarThumbVertical="#3c3c3c"
+        android:scrollbarTrackVertical="#4c4c4c"
         android:maxHeight="100dp"
         android:textColor="@color/toastDialogColorPrimaryText"
         />
