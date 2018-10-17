@@ -201,7 +201,7 @@ public class IToast {
                 }
             }
         }
-            .setDialogType(AdvancedToastDialog.DIALOG_TYPE.DIALOG_ERROR)
+            .setDialogType(AdvancedToastDialog.DIALOG_ERROR)
             .setTimeOutTimeInMills(timeout)
             .setDetailedError(errorCode,detailedErrorMessage)
             .setReportEnabled(listener!=null)
@@ -252,7 +252,7 @@ public class IToast {
 
             }
         }
-                .setDialogType(AdvancedToastDialog.DIALOG_TYPE.DIALOG_WARNING)
+                .setDialogType(AdvancedToastDialog.DIALOG_WARNING)
                 .setTimeOutTimeInMills(timeout)
                 .show();
 

@@ -5,6 +5,7 @@ import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.IntDef;
 import android.text.method.ScrollingMovementMethod;
 import android.view.View;
 import android.widget.Button;
@@ -13,6 +14,9 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.blackphoenix.phoenixutils.R;
+
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 
 
 /**
@@ -34,7 +38,7 @@ public abstract class AdvancedToastDialog extends AlertDialog {
 
     protected Drawable dialogIconDrawable = null;
     protected int dialogIconId = -1;
-    protected DIALOG_TYPE dialogType = DIALOG_TYPE.DIALOG_INFO;
+    protected int dialogType = DIALOG_INFO;
     protected boolean isReportEnabled = false;
 
 
@@ -52,14 +56,14 @@ public abstract class AdvancedToastDialog extends AlertDialog {
     public abstract void onDismissed();
     public abstract void onReport(String errorCode, String errorMessage);
 
+    public static final int DIALOG_ERROR = 1;
+    public static final int DIALOG_WARNING = 2;
+    public static final int DIALOG_INFO = 3;
+    public static final int DIALOG_CUSTOM = 4;
 
-    public enum DIALOG_TYPE {
-        DIALOG_ERROR,
-        DIALOG_WARNING,
-        DIALOG_INFO,
-        DIALOG_CUSTOM
-
-    }
+    @Retention(RetentionPolicy.SOURCE)
+    @IntDef ({DIALOG_ERROR,DIALOG_WARNING,DIALOG_INFO,DIALOG_CUSTOM})
+    public @interface DIALOG_TYPE {}
 
 
     public AdvancedToastDialog(Context context, String errorBrief){
@@ -94,7 +98,7 @@ public abstract class AdvancedToastDialog extends AlertDialog {
         return this;
     }
 
-    public AdvancedToastDialog setDialogType(DIALOG_TYPE dialogType){
+    public AdvancedToastDialog setDialogType(@DIALOG_TYPE int dialogType){
         this.dialogType = dialogType;
         return this;
     }
