@@ -154,9 +154,17 @@ public abstract class AdvancedToastDialog extends AlertDialog {
                 if(!showMoreButton.isSelected()) {
                     showMoreButton.setText("Show Less");
                     detailedContentLayout.setVisibility(View.VISIBLE);
+
+                    if(errorCode != null && errorCode.length()>0) {
+                        errorCodeLayout.setVisibility(View.VISIBLE);
+                    } else {
+                        errorCodeLayout.setVisibility(View.GONE);
+                    }
+
                     if(isReportEnabled){
                         reportButton.setVisibility(View.VISIBLE);
                     }
+
                 } else {
                     showMoreButton.setText("Show More");
                     detailedContentLayout.setVisibility(View.GONE);
@@ -247,13 +255,11 @@ public abstract class AdvancedToastDialog extends AlertDialog {
 
         showMoreButton.setSelected(false);
         showMoreButton.setVisibility(View.VISIBLE);
-        detailedContentLayout.setVisibility(View.VISIBLE);
+        //detailedContentLayout.setVisibility(View.VISIBLE);
 
-        if(errorCode != null && errorCode.length()>0) {
+        if(errorCode!=null){
             errorCodeView.setText(errorCode);
             errorCodeView.setSelected(true);
-        } else {
-            errorCodeView.setVisibility(View.GONE);
         }
 
         detailedContentView.setText(detailedErrorMessage);
