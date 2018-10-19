@@ -5,7 +5,7 @@ import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
-/*import android.support.annotation.IntDef;*/
+import android.support.annotation.IntDef;
 import android.text.method.ScrollingMovementMethod;
 import android.view.View;
 import android.widget.Button;
@@ -15,8 +15,8 @@ import android.widget.TextView;
 
 import com.blackphoenix.phoenixutils.R;
 
-/*import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;*/
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 
 
 /**
@@ -61,9 +61,9 @@ public abstract class AdvancedToastDialog extends AlertDialog {
     public static final int DIALOG_INFO = 3;
     public static final int DIALOG_CUSTOM = 4;
 
- /*   @Retention(RetentionPolicy.SOURCE)
+    @Retention(RetentionPolicy.SOURCE)
     @IntDef ({DIALOG_ERROR,DIALOG_WARNING,DIALOG_INFO,DIALOG_CUSTOM})
-    public @interface DIALOG_TYPE {}*/
+    public @interface DIALOG_TYPE {}
 
 
     public AdvancedToastDialog(Context context, String errorBrief){
@@ -98,7 +98,7 @@ public abstract class AdvancedToastDialog extends AlertDialog {
         return this;
     }
 
-    public AdvancedToastDialog setDialogType(/*@DIALOG_TYPE*/ int dialogType){
+    public AdvancedToastDialog setDialogType(@DIALOG_TYPE int dialogType){
         this.dialogType = dialogType;
         return this;
     }
