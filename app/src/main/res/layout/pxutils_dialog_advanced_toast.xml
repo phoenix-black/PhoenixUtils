@@ -37,8 +37,8 @@
         android:layout_gravity="center_vertical"
         android:maxLines="3"
         android:scrollbars="vertical"
-        android:scrollbarThumbVertical="#3c3c3c"
-        android:scrollbarTrackVertical="#4c4c4c"
+        android:scrollbarThumbVertical="@drawable/pxutils_gradient_color_grey_3c"
+        android:scrollbarTrackVertical="@drawable/pxutils_gradient_color_grey_4c"
         android:maxHeight="100dp"
         android:textColor="@color/toastDialogColorPrimaryText"
         />
@@ -102,8 +102,8 @@
             android:layout_margin="3dp"
             android:maxLines="5"
             android:scrollbars="vertical"
-            android:scrollbarThumbVertical="#3c3c3c"
-            android:scrollbarTrackVertical="#4c4c4c"
+            android:scrollbarThumbVertical="@drawable/pxutils_gradient_color_grey_3c"
+            android:scrollbarTrackVertical="@drawable/pxutils_gradient_color_grey_4c"
             android:text="Error Message"
             android:textSize="16sp"
             android:textColor="#00FFFF"/>
